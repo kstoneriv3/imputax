@@ -33,12 +33,12 @@ dev = [
 ]
 
 [tool.setuptools.dynamic]
-version = {attr = "jax_imputer.version.__version__"}
+version = {attr = "jax_impute.version.__version__"}
 
 [tool.black]
 line-length = 100
 target-version = ["py310"]
-src_paths = ["jax_imputer", "tests", "examples"]
+src_paths = ["jax_impute", "tests", "examples"]
  
 [tool.isort]
 profile = "black"
@@ -53,7 +53,7 @@ line-length = 100
 
 
 [tool.mypy]
-files = ["jax_imputer", "tests"]
+files = ["jax_impute", "tests"]
 python_version = "3.10"
 warn_unused_configs = true
 disallow_untyped_calls = true
