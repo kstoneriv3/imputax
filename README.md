@@ -1,2 +1,2 @@
-# jax-imputer
-Missing value imputation with Bayesian models
+# jax-impute
+Missing value imputation.

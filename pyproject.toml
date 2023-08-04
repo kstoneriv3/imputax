@@ -3,11 +3,11 @@ requires = ["setuptools >= 61.1.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["jax-imputer"]
+include = ["jax_impute"]
 
 [project]
-name = "jax-imputer"
-description = "Missing value imputation by Bayesian models implemented by Jax."
+name = "jax-impute"
+description = "Missing value imputation algoirithms implemented with Jax."
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [
@@ -38,7 +38,7 @@ version = {attr = "jax_impute.version.__version__"}
 [tool.black]
 line-length = 100
 target-version = ["py310"]
-src_paths = ["jax_impute", "tests", "examples"]
+src_paths = ["jax_impute", "tests", "example"]
  
 [tool.isort]
 profile = "black"
