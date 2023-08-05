@@ -3,10 +3,11 @@ import jax.numpy as jnp
 from jax import Array
 
 
-def validate_input(X: Array) -> None:
+def validate_input(X: Array, train=False) -> None:
     assert len(X.shape) == 2, "Expected float array as the input."
     assert jnp.issubdtype(X.dtype, jnp.floating), "Expected float array as the input."
-    assert not jnp.any(jnp.all(jnp.isnan(X), axis=0))
+    if train:
+        assert not jnp.any(jnp.all(jnp.isnan(X), axis=0))
 
 
 def center(X: Array) -> tuple[Array, Array]:
