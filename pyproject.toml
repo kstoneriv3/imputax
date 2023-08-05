@@ -38,7 +38,7 @@ version = {attr = "jax_impute.version.__version__"}
 [tool.black]
 line-length = 100
 target-version = ["py310"]
-src_paths = ["jax_impute", "tests", "example"]
+src_paths = ["jax_impute", "test", "example"]
  
 [tool.isort]
 profile = "black"
@@ -53,7 +53,7 @@ line-length = 100
 
 
 [tool.mypy]
-files = ["jax_impute", "tests"]
+files = ["jax_impute", "test"]
 python_version = "3.10"
 warn_unused_configs = true
 disallow_untyped_calls = true
@@ -68,7 +68,7 @@ no_implicit_reexport = true
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["test"]
 
 [[tool.mypy.overrides]]
 module = [

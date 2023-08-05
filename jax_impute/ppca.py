@@ -6,7 +6,7 @@ from typing_extensions import Self
 from jax_impute.utils import impute_by_mean, validate_input
 
 
-def impute_by_ppca(X: Array, n_components) -> Array:
+def impute_by_ppca(X: Array, n_components: int) -> Array:
     return PPCAImputer(n_components).fit_transform(X)
 
 
