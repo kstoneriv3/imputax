@@ -1,27 +1,11 @@
-# Exact EM algorithm for probabilistic PCA
 
-
-Here, I will note the derivation of the exact EM algorithm for probabilistic PCA with missing observations. This complements the note by Verbeek* [1], which derives the EM algorithm using the non-exact posterior approximation with factorizable variational family $\\{q(x_i^h, z_i): q(x_i^h, z_i) = q(x_i^h)q(z_i)\\}$. Though an exact E-step should lead to a better solution, his non-exact approximation is computationally more efficient we it does not require the matrix inversion for $\Sigma_i$ for all data points per each E-step.
-
-*Note that I use $(X, Z)$ in place of $(Y, X)$ in his note.
-
-
-## Model
-
-Probabilistic PCA is an i.i.d. data generation process of $\\{x_i, y_i\\}_{i=1}^n$ where (unobservable) latent variable $z_i$ and observable variable $x_i$ follows
-
-$$p(z_i) \sim \mathcal{N}(0, I)$$
-
-$$p(x_i|z_i) \sim \mathcal{N}(C^T z_i, \sigma^2 I)$$
-
-
-## Algorithm
+## Exact EM Algorithm
 
 ### E-step:
 
 $$q(z_i|x^o_i) = p(z_i|x^o_i) = \mathcal{N}(z| \mu_i, \Sigma_i),$$
 where
-$\Sigma_i = (I + \frac{1}{\sigma^2} C^o_i {C^o_i}^T)^{-1}$,
+$\Sigma_i = (I + C^o_i {\Psi^o_i}^{-1} {C^o_i}^T)^{-1}$,
 $\mu_i = \sigma^{-2} \Sigma_i^{-1}C_i^o x^o_i$,
 and
 
@@ -34,13 +18,16 @@ $$\hat C =
 \left(\sum_{i=1}^n \mathbb{E}_q [z_iz_i^T] \right)^{-1}
 $$
 
-$$\hat \sigma^2
-= \frac{1}{nd} \sum_{i=1}^n \mathbb{E}\_q \\|x_i - C z_i\\|^2 
-= \frac{1}{nd} \sum_{i=1}^n \mathbb{E}_q \left[
-    \\|x_i^h - (C^h_i)^T z_i\\|^2
-    + \\|x_i^o - (C_i^o)^T \mu_i\\|^2
-    + \\|(C_i^o)^T \mu_i - (C_i^o)^T z_i^o\\|^2
-\right]
+
+$$\hat \Psi_{kk}
+= \frac{1}{n} \sum_{i=1}^n \mathbb{E}\_q |(x_{i} - \hat C^T z_i)_k|^2
+$$
+
+$$
+= \frac{1}{n} \sum_{i: x_{i, k}\text{ unobserved}} \mathbb{E}_q 
+    |(x_i^h - (\hat C^h_i)^T z_i)_k |^2
+    + \frac{1}{n} \sum\_{i: x\_{i, k}\text{ observed}} \mathbb{E}_q
+\left[ |(x_i^o - (\hat C_i^o)^T \mu_i)_k |^2 + |((\hat C_i^o)^T \mu_i - (\hat C_i^o)^T z_i^o)_k |^2 \right]
 $$
 
 where we have
@@ -51,9 +38,38 @@ $\mathbb{E}_q[x_i^h (z_i)^T] = (C^h_i)^T\left(\mathbb{E}_q[z_i(z_i)^T]\right)$,
 
 and 
 
-$\mathbb{E}_q \\|x_i^h - (C^h_i)^T z_i\\|^2 = \sigma^2 \cdot \mathrm{dim}(x^h_i)$, 
-$\mathbb{E}_q \\|(C_i^o)^T \mu_i - (C_i^o)^T z_i^o\\|^2 
-= \mathrm{tr}\left( C_i^o (C_i^o)^T \Sigma_i \right)$.
+$\mathbb{E}_q |(x_i^h - (\hat C^h_i)^T z_i)_k|^2 = \mathbb{E}_q |(x_i^h - (C^h_i)^T z_i + (C^h_i)^T z_i - (\hat C^h_i)^T z_i)_k|^2 = \sigma^2_k + [(C^h_i - \hat C^h_i)^T \Sigma (C^h_i - \hat C^h_i)]\_{kk}$ when $x\_{i, k}$ is not observed, 
+
+$\mathbb{E}_q |((\hat C_i^o)^T \mu_i - (\hat C_i^o)^T z_i^o)_k|^2 
+= [(\hat C_i^o)^T \Sigma_i \hat C_i^o ]\_{kk}$ when $x\_{i,k}$ is observed.
+
+
+
+# EM algorithms for the factor model
+
+This note describes the EM algorithm for the factor model with missing observations. First, we introduce the variational EM algorithm similar to the one for probabilistic PCA by Verbeek* [1], using the non-exact posterior approximation with factorizable variational family $\\{q(x_i^h, z_i): q(x_i^h, z_i) = q(x_i^h)q(z_i)\\}$. 
+On top of the variation EM algorithm, we will discuss the exact EM algorithm in the latter half of this note.
+
+Note that even though an exact E-step should lead to a better solution, his non-exact approximation is computationally more efficient we it does not require the matrix inversion for $\Sigma_i$ for all data points per each E-step.
+
+*Note that I use $(X, Z)$ in place of $(Y, X)$ in his note.
+
+
+## Model
+
+The factor model is an i.i.d. data generation process of $\\{x_i, y_i\\}_{i=1}^n$ where (unobservable) latent variable $z_i$ and observable variable $x_i$ follows
+
+$$p(z_i) \sim \mathcal{N}(0, I)$$
+
+$$p(x_i|z_i) \sim \mathcal{N}(C^T z_i, \Psi I)$$
+
+where $\Psi$ is a diagonal matrix.
+
+
+## Variational EM Algorithm
+
+TODO
+
 
 
 [1] Verbeek, J. (2009). Notes on probabilistic PCA with missing values. Tech. report.
