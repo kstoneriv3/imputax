@@ -1,14 +1,14 @@
 # Exact EM algorithm for probabilistic PCA
 
 
-Here, I will note the exact EM algorithm for probabilistic PCA with missing observations. This complements the note by Verbeek* [1], which derives the EM algorithm using the non-exact posterior approximation with factorizable variational family $\\{q(x_i^h, z_i): q(x_i^h, z_i) = q(x_i^h)q(z_i)\\}$. Though an exact E-step should lead to a better solution, his non-exact approximation is computationally more efficient we it does not require the matrix inversion for $\Sigma_i$ for all data points per each E-step.
+Here, I will note the exact EM algorithm for probabilistic PCA with missing observations. This complements the note by Verbeek* [1], which derives the (variational) EM algorithm using the non-exact posterior approximation with factorizable variational family $\\{q(x_i^h, z_i): q(x_i^h, z_i) = q(x_i^h)q(z_i)\\}$. Though an exact E-step should lead to a better solution, his non-exact approximation is computationally more efficient we it does not require the matrix inversion for $\Sigma_i$ for all data points per each E-step.
 
 *Note that I use $(X, Z)$ in place of $(Y, X)$ in his note.
 
 
 ## Model
 
-Probabilistic PCA is an i.i.d. data generation process of $\\{x_i, y_i\\}_{i=1}^n$ where (unobservable) latent variable $z_i$ and observable variable $x_i$ follows
+The probabilistic PCA is an i.i.d. data generation process of $\\{x_i, y_i\\}_{i=1}^n$ where (unobservable) latent variable $z_i$ and observable variable $x_i$ follows
 
 $$p(z_i) \sim \mathcal{N}(0, I)$$
 
