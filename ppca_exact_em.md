@@ -5,6 +5,16 @@ Here, I will note the derivation of the exact EM algorithm for probabilistic PCA
 
 *Note that I use $(X, Z)$ in place of $(Y, X)$ in his note.
 
+
+## Model
+
+Probabilistic PCA is an i.i.d. data generation process of $\\{x_i, y_i\\}_{i=1}^n$ where (unobservable) latent variable $z_i$ and observable variable $x_i$ follows
+
+$$p(z_i) \sim \mathcal{N}(0, I)$$
+
+$$p(x_i|z_i) \sim \mathcal{N}(C^T z_i, \sigma^2 I)$$
+
+
 ## Algorithm
 
 ### E-step:
