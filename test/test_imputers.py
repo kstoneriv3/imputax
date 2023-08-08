@@ -2,7 +2,7 @@ import jax
 import jax.numpy as jnp
 from jax import Array
 
-from jax_impute import impute_by_mean, impute_by_pca
+from jax_impute import impute_by_mean, impute_by_pca, impute_by_ppca
 
 jax.config.update("jax_platform_name", "cpu")  # type: ignore [no-untyped-call]
 
@@ -31,7 +31,7 @@ def add_nans(x: Array) -> Array:
     return x.reshape(shape)
 
 
-X0 = sample_toy_data(10**4, 10**3, key)
+X0 = sample_toy_data(10**3, 10**2, key)
 X = add_nans(X0)
 
 
@@ -44,3 +44,7 @@ def score(x: Array) -> Array:
 
 def test_impute_by_pca() -> None:
     assert score(impute_by_pca(X, 10)) > 0.5
+
+
+def test_impute_by_ppca() -> None:
+    assert score(impute_by_ppca(X, 10)) > 0.5
