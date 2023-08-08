@@ -35,7 +35,7 @@ $$\hat C =
 $$
 
 $$\hat \sigma^2
-= \frac{1}{nd} \sum_{i=1}^n \mathbb{E}\_q \\|x_i - C z_i\\|^2 
+= \frac{1}{nd} \sum_{i=1}^n \mathbb{E}\_q \\|x_i - C^T z_i\\|^2 
 = \frac{1}{nd} \sum_{i=1}^n \mathbb{E}_q \left[
     \\|x_i^h - (C^h_i)^T z_i\\|^2
     + \\|x_i^o - (C_i^o)^T \mu_i\\|^2
