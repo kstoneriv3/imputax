@@ -39,7 +39,7 @@ $$\hat \sigma^2
 = \frac{1}{nd} \sum_{i=1}^n \mathbb{E}_q \left[
     \\|x_i^h - (\hat C^h_i)^T z_i\\|^2
     + \\|x_i^o - (\hat C_i^o)^T \mu_i\\|^2
-    + \\|(\hat C_i^o)^T \mu_i - (\hat C_i^o)^T z_i^o\\|^2
+    + \\|(\hat C_i^o)^T (\mu_i^o -  z_i^o)\\|^2
 \right]
 $$
 
@@ -53,7 +53,7 @@ and
 
 $\mathbb{E}_q \\|x_i^h - (\hat C^h_i)^T z_i\\|^2 =  \mathbb{E}_q \\|x_i^h - (C^h_i)^T z_i + (C^h_i)^T z_i - (\hat C^h_i)^T z_i\\|^2 = \sigma\_\text{old}^2 \cdot \mathrm{dim}(x^h_i) + \mathrm{tr}\left( (\hat C_i^h - C_i^h) (\hat C_i^h - C_i^h)^T (\Sigma_i + \mu_i \mu_i^T) \right)$, 
 
-$\mathbb{E}_q \\|(\hat C_i^o)^T \mu_i - (\hat C_i^o)^T z_i^o\\|^2 
+$\mathbb{E}_q \\|(\hat C_i^o)^T (\mu_i^o -  z_i^o) \\|^2 
 = \mathrm{tr}\left( \hat C_i^o (\hat C_i^o)^T \Sigma_i \right)$.
 
 
