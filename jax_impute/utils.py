@@ -1,17 +1,22 @@
 from typing import Optional
+
 import jax
 import jax.numpy as jnp
-from jax import Array
+from jaxtyping import Array, Float
 
 
-def validate_input(X: Array, train: bool = False) -> None:
+def validate_input(X: Float[Array, "n m"], train: bool = False) -> None:
     assert len(X.shape) == 2, "Expected float array as the input."
     assert jnp.issubdtype(X.dtype, jnp.floating), "Expected float array as the input."
     if train:
         assert not jnp.any(jnp.all(jnp.isnan(X), axis=0))
 
 
-def standardize(X: Array, mean: Optional[Array], std: Optional[Array]) -> tuple[Array, Array, Array]:
+def standardize(
+    X: Float[Array, "n m"],
+    mean: Optional[Float[Array, " m"]] = None,
+    std: Optional[Float[Array, " m"]] = None,
+) -> tuple[Float[Array, "n m"], Float[Array, " m"], Float[Array, " m"]]:
     if mean is None and std is None:
         mean = jnp.nanmean(X, axis=0)
         std = jnp.nanstd(X, axis=0)
@@ -22,12 +27,16 @@ def standardize(X: Array, mean: Optional[Array], std: Optional[Array]) -> tuple[
     return X, mean, std
 
 
-def unstandardize(X: Array, mean: Array, std: Array) -> Array:
+def unstandardize(
+    X: Float[Array, "n m"],
+    mean: Float[Array, " m"],
+    std: Float[Array, " m"],
+) -> Float[Array, "n m"]:
     X = X * std + mean[None, :]
     return X
 
 
 @jax.vmap
-def impute_by_mean(x: Array, inplace: bool = False) -> Array:
+def impute_by_mean(x: Float[Array, "n m"], inplace: bool = False) -> Float[Array, "n m"]:
     mean = jnp.nanmean(x)
     return jnp.nan_to_num(x, copy=not inplace, nan=mean)

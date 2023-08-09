@@ -1,7 +1,7 @@
 from typing import Callable, cast
 
 import jax.numpy as jnp
-from jax import Array
+from jaxtyping import Array, Float
 from typing_extensions import Self
 
 from jax_impute.utils import standardize, unstandardize, validate_input
@@ -9,7 +9,9 @@ from jax_impute.utils import standardize, unstandardize, validate_input
 jnp_diag = cast(Callable[[Array], Array], jnp.diag)
 
 
-def impute_by_pca(X: Array, n_components: int, n_iter: int = 1) -> Array:
+def impute_by_pca(
+    X: Float[Array, "n m"], n_components: int, n_iter: int = 1
+) -> Float[Array, "n m"]:
     """Missing value imputation by PCA.
 
     This corresponds maximum likelihood estimator of multivariate Gaussian model with
@@ -35,7 +37,7 @@ class PCAImputer:
     def __init__(self, n_components: int) -> None:
         self.n_components = n_components
 
-    def fit(self, X: Array, n_iter: int = 3) -> Self:
+    def fit(self, X: Float[Array, "n m"], n_iter: int = 3) -> Self:
         validate_input(X, train=True)
         X, mean, std = standardize(X)
         isnan = jnp.isnan(X)
@@ -53,12 +55,12 @@ class PCAImputer:
         self._S = S
         return self
 
-    def transform(self, X: Array) -> Array:
+    def transform(self, X: Float[Array, "n m"]) -> Float[Array, "n m"]:
         validate_input(X)
         # vmap does not support non-concrete indexing and it memory inefficient...
         return jnp.stack([self._transform_row(x) for x in X])
 
-    def _transform_row(self, x: Array) -> Array:
+    def _transform_row(self, x: Float[Array, "n m"]) -> Float[Array, "n m"]:
         x = (x - self._mean) / self._std
         isnan = jnp.isnan(x)
         VS = self._V @ jnp.diag(self._S)  # type: ignore [no-untyped-call]
@@ -66,6 +68,6 @@ class PCAImputer:
         x = x * self._std + self._mean
         return x
 
-    def fit_transform(self, X: Array) -> Array:
+    def fit_transform(self, X: Float[Array, "n m"]) -> Float[Array, "n m"]:
         self.fit(X)
         return self.transform(X)

@@ -1,3 +1,4 @@
+import pytest
 import jax
 import jax.numpy as jnp
 from jax import Array
@@ -5,23 +6,24 @@ from jax import Array
 from jax_impute import impute_by_mean, impute_by_pca, impute_by_ppca
 
 jax.config.update("jax_platform_name", "cpu")  # type: ignore [no-untyped-call]
-
+jax.disable_jit()
 
 key = jax.random.PRNGKey(0)
-n_components = 10
+n_components = 5
 lag = 10
 
 
 def sample_toy_data(n: int, d: int, key: jax.random.KeyArray) -> Array:
-    keys = jax.random.split(key, num=4)
+    keys = jax.random.split(key, num=5)
     W = jax.random.normal(keys[0], (d * n_components,)).reshape(d, n_components)
     F = jnp.repeat(jnp.exp(-jnp.arange(lag) / lag)[:, None], n_components, axis=1)
     z0 = jax.random.normal(keys[1], (n * n_components,)).reshape(n, n_components)
     # add serial correlation by exponentially decaying causal filter
     z = jax.vmap(jax.scipy.signal.convolve, in_axes=1, out_axes=1)(z0, F)[:n]
     eps = jax.random.normal(keys[2], (n * d,)).reshape(n, d)
-    bias = jax.random.normal(keys[2], (d,))
-    return z @ W.T + eps + bias[None, :]
+    noise_scale = jax.random.uniform(keys[3], (d,))
+    bias = jax.random.normal(keys[4], (d,))
+    return z @ W.T + noise_scale[None, :] * eps + bias[None, :]
 
 
 def add_nans(x: Array) -> Array:
@@ -31,7 +33,7 @@ def add_nans(x: Array) -> Array:
     return x.reshape(shape)
 
 
-X0 = sample_toy_data(10**3, 10**2, key)
+X0 = sample_toy_data(10**3, 100, key)
 X = add_nans(X0)
 
 
@@ -43,8 +45,11 @@ def score(x: Array) -> Array:
 
 
 def test_impute_by_pca() -> None:
-    assert score(impute_by_pca(X, 10)) > 0.5
+    assert score(impute_by_pca(X, n_components)) > 0.5
 
 
-def test_impute_by_ppca() -> None:
-    assert score(impute_by_ppca(X, 10)) > 0.5
+@pytest.mark.parametrize("posterior_approximator", ["full", "factorizable"])
+def test_impute_by_ppca(posterior_approximator) -> None:
+    assert score(
+        impute_by_ppca(X, n_components, posterior_approximator=posterior_approximator)
+    ) > 0.5
