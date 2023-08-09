@@ -33,7 +33,7 @@ $$\hat C_{k, \cdot} =
 $$
 
 $$\hat \sigma^2
-= \frac{1}{(\text{\\# of observed entries})} \sum_{i=1}^n \mathbb{E}\_q \\|x_i^o - \hat (C^o_i))^T z_i\\|^2 
+= \frac{1}{(\text{\\# of observed entries})} \sum_{i=1}^n \mathbb{E}\_q \\|x_i^o - (\hat C^o_i))^T z_i\\|^2 
 = \frac{1}{(\text{\\# of observed entries})} \sum_{i=1}^n \mathbb{E}_q \left[
     \\|x_i^o - (\hat C_i^o)^T \mu_i\\|^2
     + \\|(\hat C_i^o)^T (\mu_i -  z_i)\\|^2
