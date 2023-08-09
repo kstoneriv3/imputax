@@ -26,10 +26,7 @@ where $\Psi$ is a diagonal matrix.
 $$q(z_i) = p(z_i|x^o_i) = \mathcal{N}(z| \mu_i, \Sigma_i),$$
 where
 $\Sigma_i = (I + C^o_i {\Psi^o_i}^{-1} {C^o_i}^T)^{-1}$,
-$\mu_i = \sigma^{-2} \Sigma_i^{-1}C_i^o x^o_i$,
-and
-
-$$q(x^h_i|z_i) = p(x^h_i|z_i, x^o_i) = p(x^h_i| z_i) = \mathcal{N}(x^h_i|{C^h_i}^T z_i, \sigma^2).$$
+$\mu_i = \sigma^{-2} \Sigma_i^{-1}C_i^o x^o_i$. Note that we do not use $q(x^h_i|z_i)$ in the exact EM algorithm.
 
 ### M-step:
 
@@ -40,13 +37,7 @@ $$
 
 
 $$\hat \Psi_{kk}
-= \frac{1}{n} \sum_{i=1}^n \mathbb{E}\_q |(x_{i} - \hat C^T z_i)_k|^2
-$$
-
-$$
-= \frac{1}{n} \sum_{i: x_{i, k}\text{ unobserved}} \mathbb{E}_q 
-    |(x_i^h - (\hat C^h_i)^T z_i)_k |^2
-    + \frac{1}{n} \sum\_{i: x\_{i, k}\text{ observed}} \mathbb{E}_q
+= \frac{1}{|\\{{i: x\_{i, k}\text{ observed}}\\}|} \sum\_{i: x\_{i, k}\text{ observed}} \mathbb{E}_q
 \left[ |(x_i^o - (\hat C_i^o)^T \mu_i)_k |^2 + |((\hat C_i^o)^T \mu_i - z_i^o)_k |^2 \right]
 $$
 
@@ -109,7 +100,8 @@ where we have
 
 $\mathbb{E}\_q[z_i z_i^T] = \Sigma_z + \mu_z \mu_z^T$, 
 $\mathbb{E}\_q[x_i z_i^T] = \mu_{x_i} \mu_{z_i}^T$,
-$\mathrm{Cov}[x_i] = \Psi^h_\text{old}$.
+$\mathrm{Cov}[x_i^h] = \Psi^h_\text{old}$,
+$\mathrm{Cov}[x_i^o] = 0$.
 
 
 
