@@ -28,8 +28,8 @@ and we don't need $q(x_i^h|z_i)$ for exact EM algorithm.
 ### M-step:
 
 $$\hat C_{k, \cdot} = 
-\left(\sum_{i: x_{i, k}\text{ is observed}} \mathbb{E}\_q [x_iz_i^T] \right) 
-\left(\sum_{i: x_{i, k}\text{ is observed}} \mathbb{E}_q [z_iz_i^T] \right)^{-1}
+\left(\sum_{i: x_{i, k}\text{ is observed}} \mathbb{E}\_q [z_iz_i^T] \right)^{-1}
+\left(\sum_{i: x_{i, k}\text{ is observed}} \mathbb{E}\_q [z_i x_{i,k}] \right) 
 $$
 
 $$\hat \sigma^2
@@ -44,7 +44,6 @@ where we have
 
 $\mathbb{E}_q[z_i z_i^T] = \Sigma_i + \mu_i \mu_i^T$, 
 $\mathbb{E}_q[x_i^o z_i^T] = x_i^o \mu_i^T$,
-$\mathbb{E}_q[x_i^h z_i^T] = (C^h_i)^T\left(\mathbb{E}_q[z_i z_i^T]\right)$,
 
 and 
 
