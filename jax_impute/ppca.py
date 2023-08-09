@@ -8,6 +8,7 @@ from typing_extensions import Self
 from jax_impute import impute_by_pca
 from jax_impute.utils import standardize, validate_input
 
+# TODO; maybe use namedtuple
 PosteriorMoments = tuple[Float[Array, "n d"], Float[Array, "n d d"]]
 Params = tuple[Float[Array, "d m"], Float[Array, ""]]
 
@@ -25,7 +26,7 @@ class PPCAImputer:
     """Missing value imputation by probabilistic PCA.
 
     We use similar notation to that of the following technical report [1] except that we use (X, Z)
-    instead of (Y, X). However, they assume factorizable variational family q(z, x_h) = q(z)q(x_h),
+    instead of (Y, X). However, they assume factorized variational family q(z, x_h) = q(z)q(x_h),
     while we also implement full variational family that contains exact posterior.
 
     [1] Verbeek, J. (2009). Notes on probabilistic PCA with missing values. Tech. report.
@@ -33,7 +34,7 @@ class PPCAImputer:
     Args:
         n_components: The number of latent components of probabilistic PCA.
         posterior_approximator: The type of posteior approximator in the E-step to be used.
-            It must be one of "full" or "factorizable", which correspond to exact and variational
+            It must be one of "full" or "factorized", which correspond to exact and variational
             EM algorithm respectively.
     """
 
@@ -44,11 +45,11 @@ class PPCAImputer:
     def fit(self, X: Float[Array, "n m"], n_iter: int = 5) -> Self:
         if self.posterior_approximator == "full":
             return self.fit_with_full_posterior(X, n_iter)
-        elif self.posterior_approximator == "factorizable":
-            return self.fit_with_factorizable_posterior(X, n_iter)
+        elif self.posterior_approximator == "factorized":
+            return self.fit_with_factorized_posterior(X, n_iter)
         else:
             raise ValueError(
-                'posterior_approximator must be either "full" or "factorizable", '
+                'posterior_approximator must be either "full" or "factorized", '
                 "but {self.posterior_approximator} is given."
             )
 
@@ -58,20 +59,40 @@ class PPCAImputer:
         X, mean, std = standardize(X)
         self._mean = mean
         self._std = std
+
         C, sigma2 = _get_initial_params(X, self.n_components)
+
         for i in range(n_iter):
             # E step
             EZ, CovZ = _e_step_full(X, C, sigma2)
             # M step
-            C, sigma2 = _m_step_full(X, EZ, CovZ, C, sigma2)
+            C, sigma2 = _m_step_full(X, EZ, CovZ)
 
         C = orthonormalize(C)
         self._C = C
         self._sigma2 = sigma2
         return self
 
-    def fit_with_factorizable_posterior(self, X: Float[Array, "n m"], n_iter: int = 5) -> Self:
-        raise NotImplementedError
+    def fit_with_factorized_posterior(self, X: Float[Array, "n m"], n_iter: int = 5) -> Self:
+        """For details, see [1]."""
+        validate_input(X)
+        X, mean, std = standardize(X)
+        self._mean = mean
+        self._std = std
+
+        C, sigma2 = _get_initial_params(X, self.n_components)
+        EX = jnp.where(jnp.isnan(X), 0, X)
+        EZ = jnp.linalg.lstsq(C.T, EX.T)[0].T
+
+        for i in range(n_iter):
+            # E step
+            EX, EZ, varx, Covz = _e_step_factorized(X, C, sigma2, EX, EZ)
+            # M step
+            C, sigma2 = _m_step_factorized(X, EX, EZ, varx, Covz)
+
+        C = orthonormalize(C)
+        self._C = C
+        self._sigma2 = sigma2
         return self
 
     def transform(self, X: Float[Array, "n m"]) -> Array:
@@ -81,6 +102,46 @@ class PPCAImputer:
     def fit_transform(self, X: Float[Array, "n m"], n_iter: int = 5) -> Array:
         self.fit(X, n_iter)
         return self.transform(X)
+
+
+def _e_step_factorized(
+    X: Float[Array, "n m"],
+    C: Float[Array, "d m"],
+    sigma2: Float[Array, ""],
+    EX_old: Float[Array, "n m"],
+    EZ_old: Float[Array, "n d"],
+) -> tuple[Float[Array, "n m"], Float[Array, "n d"], Float[Array, ""], Float[Array, "d d"]]:
+    n_components = C.shape[0]
+    EX = jnp.where(jnp.isnan(X), EZ_old @ C, X)
+    varx = sigma2
+    Covz = jnp.linalg.inv(jnp.eye(n_components) + C @ C.T / sigma2)
+    # Instead of
+    # EZ = EX_old @ C.T @ CovZ / sigma2
+    # we can use up-to-date value of EX, when updating EZ.
+    EZ = EX @ C.T @ Covz / sigma2
+    return EX, EZ, varx, Covz
+
+
+def _m_step_factorized(
+    X: Float[Array, "n m"],
+    EX: Float[Array, "n m"],
+    EZ: Float[Array, "n d"],
+    varx: Float[Array, ""],
+    Covz: Float[Array, "d d"],
+) -> tuple[Float[Array, "d m"], Float[Array, ""]]:
+    n, d = X.shape
+    n_missing = jnp.sum(jnp.isnan(X))
+    C = jnp.linalg.inv(n * Covz + EZ.T @ EZ) @ (EZ.T @ EX)
+    sigma2 = (
+        1
+        / (n * d)
+        * (
+            n * jnp.einsum("ij,im,jm->", Covz, C, C)
+            + jnp.sum((EX - EZ @ C) ** 2)
+            + n_missing * varx
+        )
+    )
+    return C, sigma2
 
 
 def _e_step_full(
@@ -93,8 +154,6 @@ def _m_step_full(
     X: Float[Array, "n m"],
     EZ: Float[Array, "n d"],
     CovZ: Float[Array, "n d d"],
-    C_old: Float[Array, "d m"],
-    sigma2_old: Float[Array, ""],
 ) -> Params:
     EZ.shape[1]
     n, d = X.shape
@@ -104,7 +163,7 @@ def _m_step_full(
         partial(_least_square_with_incomplete_y, batched_x=EZ, batched_xxT=EZZ),
         in_axes=1,
         out_axes=1,
-    # )(batched_y=X)  # This is wrong, vmap always maps the first axis of a keyword argument 
+        # )(batched_y=X)  # This is wrong, vmap always maps the first axis of a keyword argument
     )(X)
     sigma2 = (
         1

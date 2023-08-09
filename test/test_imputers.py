@@ -1,6 +1,6 @@
-import pytest
 import jax
 import jax.numpy as jnp
+import pytest
 from jax import Array
 
 from jax_impute import impute_by_mean, impute_by_pca, impute_by_ppca
@@ -49,7 +49,7 @@ def test_impute_by_pca() -> None:
 
 
 @pytest.mark.parametrize("posterior_approximator", ["full", "factorizable"])
-def test_impute_by_ppca(posterior_approximator) -> None:
-    assert score(
-        impute_by_ppca(X, n_components, posterior_approximator=posterior_approximator)
-    ) > 0.5
+def test_impute_by_ppca(posterior_approximator: str) -> None:
+    assert (
+        score(impute_by_ppca(X, n_components, posterior_approximator=posterior_approximator)) > 0.5
+    )
