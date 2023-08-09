@@ -45,11 +45,8 @@ where we have
 
 $\mathbb{E}_q[z_i z_i^T] = \Sigma_i + \mu_i \mu_i^T$, 
 $\mathbb{E}_q[x_i^o z_i^T] = x_i^o \mu_i^T$,
-$\mathbb{E}_q[x_i^h z_i^T] = (C^h_i)^T\left(\mathbb{E}_q[z_i z_i^T]\right)$,
 
 and 
-
-$\mathbb{E}_q |(x_i^h - (\hat C^h_i)^T z_i)_k|^2 = \mathbb{E}_q |(x_i^h - (C^h_i)^T z_i + (C^h_i)^T z_i - (\hat C^h_i)^T z_i)_k|^2 = \sigma^2_k + [(C^h_i - \hat C^h_i)^T \Sigma (C^h_i - \hat C^h_i)]\_{kk}$ when $x\_{i, k}$ is not observed, 
 
 $\mathbb{E}_q |((\hat C_i^o)^T (\mu_i - z_i)_k|^2 
 = [(\hat C_i^o)^T \Sigma_i \hat C_i^o ]\_{kk}$ when $x\_{i,k}$ is observed.
