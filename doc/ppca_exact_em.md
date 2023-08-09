@@ -23,22 +23,19 @@ $$q(z_i) = p(z_i|x^o_i) = \mathcal{N}(z| \mu_i, \Sigma_i),$$
 where
 $\Sigma_i = (I + \frac{1}{\sigma^2} C^o_i {C^o_i}^T)^{-1}$,
 $\mu_i = \sigma^{-2} \Sigma_i^{-1}C_i^o x^o_i$,
-and
-
-$$q(x^h_i|z_i) = p(x^h_i|z_i, x^o_i) = p(x^h_i| z_i) = \mathcal{N}(x^h_i|{C^h_i}^T z_i, \sigma^2).$$
+and we don't need $q(x_i^h|z_i)$ for exact EM algorithm. 
 
 ### M-step:
 
-$$\hat C = 
-\left(\sum_{i=1}^n \mathbb{E}\_q [x_iz_i^T] \right) 
-\left(\sum_{i=1}^n \mathbb{E}_q [z_iz_i^T] \right)^{-1}
+$$\hat C_{k, \cdot} = 
+\left(\sum_{i: x_{i, k}\text{ is observed}} \mathbb{E}\_q [x_iz_i^T] \right) 
+\left(\sum_{i: x_{i, k}\text{ is observed}} \mathbb{E}_q [z_iz_i^T] \right)^{-1}
 $$
 
 $$\hat \sigma^2
-= \frac{1}{nd} \sum_{i=1}^n \mathbb{E}\_q \\|x_i - \hat C^T z_i\\|^2 
+= \frac{1}{(\text{\\# of observed entries})} \sum_{i=1}^n \mathbb{E}\_q \\|x_i^o - \hat (C^o_i))^T z_i\\|^2 
 = \frac{1}{nd} \sum_{i=1}^n \mathbb{E}_q \left[
-    \\|x_i^h - (\hat C^h_i)^T z_i\\|^2
-    + \\|x_i^o - (\hat C_i^o)^T \mu_i\\|^2
+    \\|x_i^o - (\hat C_i^o)^T \mu_i\\|^2
     + \\|(\hat C_i^o)^T (\mu_i -  z_i)\\|^2
 \right]
 $$
@@ -50,8 +47,6 @@ $\mathbb{E}_q[x_i^o z_i^T] = x_i^o \mu_i^T$,
 $\mathbb{E}_q[x_i^h z_i^T] = (C^h_i)^T\left(\mathbb{E}_q[z_i z_i^T]\right)$,
 
 and 
-
-$\mathbb{E}_q \\|x_i^h - (\hat C^h_i)^T z_i\\|^2 =  \mathbb{E}_q \\|x_i^h - (C^h_i)^T z_i + (C^h_i)^T z_i - (\hat C^h_i)^T z_i\\|^2 = \sigma\_\text{old}^2 \cdot \mathrm{dim}(x^h_i) + \mathrm{tr}\left( (\hat C_i^h - C_i^h) (\hat C_i^h - C_i^h)^T (\Sigma_i + \mu_i \mu_i^T) \right)$, 
 
 $\mathbb{E}_q \\|(\hat C_i^o)^T (\mu_i -  z_i) \\|^2 
 = \mathrm{tr}\left( \hat C_i^o (\hat C_i^o)^T \Sigma_i \right)$.
