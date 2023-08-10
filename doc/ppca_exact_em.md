@@ -22,7 +22,7 @@ $$p(x_i|z_i) \sim \mathcal{N}(C^T z_i, \sigma^2 I)$$
 $$q(z_i) = p(z_i|x^o_i) = \mathcal{N}(z| \mu_i, \Sigma_i),$$
 where
 $\Sigma_i = (I + \frac{1}{\sigma^2} C^o_i {C^o_i}^T)^{-1}$,
-$\mu_i = \sigma^{-2} \Sigma_i^{-1}C_i^o x^o_i$,
+$\mu_i = \sigma^{-2} \Sigma_i C_i^o x^o_i$,
 and we don't need $q(x_i^h|z_i)$ for exact EM algorithm. 
 
 ### M-step:
