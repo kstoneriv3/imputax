@@ -26,7 +26,7 @@ where $\Psi$ is a diagonal matrix.
 $$q(z_i) = p(z_i|x^o_i) = \mathcal{N}(z| \mu_i, \Sigma_i),$$
 where
 $\Sigma_i = (I + C^o_i {\Psi^o_i}^{-1} {C^o_i}^T)^{-1}$,
-$\mu_i = \sigma^{-2} \Sigma_i C_i^o x^o_i$. Note that we do not use $q(x^h_i|z_i)$ in the exact EM algorithm.
+$\mu_i = \Sigma_i C_i^o {\Psi^o_i}^{-1} x^o_i$. Note that we do not use $q(x^h_i|z_i)$ in the exact EM algorithm.
 
 ### M-step:
 
