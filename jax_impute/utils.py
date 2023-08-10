@@ -40,3 +40,8 @@ def unstandardize(
 def impute_by_mean(x: Float[Array, "n m"], inplace: bool = False) -> Float[Array, "n m"]:
     mean = jnp.nanmean(x)
     return jnp.nan_to_num(x, copy=not inplace, nan=mean)
+
+
+def orthonormalize(C: Float[Array, "d m"]) -> Float[Array, "d m"]:
+    _, V = jnp.linalg.eigh(C @ C.T)
+    return V.T @ C
