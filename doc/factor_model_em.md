@@ -26,7 +26,7 @@ where $\Psi$ is a diagonal matrix.
 $$q(z_i) = p(z_i|x^o_i) = \mathcal{N}(z| \mu_i, \Sigma_i),$$
 where
 $\Sigma_i = (I + C^o_i {\Psi^o_i}^{-1} {C^o_i}^T)^{-1}$,
-$\mu_i = \sigma^{-2} \Sigma_i^{-1}C_i^o x^o_i$. Note that we do not use $q(x^h_i|z_i)$ in the exact EM algorithm.
+$\mu_i = \Sigma_i C_i^o {\Psi^o_i}^{-1} x^o_i$. Note that we do not use $q(x^h_i|z_i)$ in the exact EM algorithm.
 
 ### M-step:
 
@@ -61,7 +61,7 @@ $\mathbb{E}_q |((\hat C_i^o)^T (\mu_i - z_i)_k|^2
 $$q(z_i) \propto \exp \int \log p(x_i, z_i) \mathrm{d}q(x_i^h) = \mathcal{N}(z| \mu_{z_i}, \Sigma_z),$$
 where
 $\Sigma_z = (I+ C \Psi^{-1} C^T)^{-1}$ (this does not depend on $i$!),
-$\mu_{z_i} = \Sigma^{-1}C \Psi^{-1} \mu_{x_i,\text{old}}$,
+$\mu_{z_i} = \Sigma C \Psi^{-1} \mu_{x_i,\text{old}}$,
 and
 
 $$q(x^h_i) \propto \exp \int \log p(x_i, z_i) \mathrm{d}q(z_i) = \mathcal{N}(z| \mu_{x_i}^h, \Psi^h),$$
@@ -70,7 +70,7 @@ where $\mu_{x_i}^h = (C^h)^T\mu_{z_i,\text{old}}$.
 We also set observable part of $\mu_{x_i}$ as $\mu_{x_i}^o=x^o_i$ for our convenience.
 
 Here, it is possible to find the solution of the above variational inference with the recurrent formula 
-$\mu_{z_i} = \Sigma^{-1}C \Psi^{-1} \mu_{x_i} = \Sigma^{-1} [C^o (\Psi^o)^{-1} x_i^o + C^h (\Psi^h)^{-1} (C^h)^T \mu_{z_i}]$,
+$\mu_{z_i} = \Sigma C \Psi^{-1} \mu_{x_i} = \Sigma [C^o (\Psi^o)^{-1} x_i^o + C^h (\Psi^h)^{-1} (C^h)^T \mu_{z_i}]$,
 but it involves solving linear systems for all data points. If we can afford such an amount of computing, we should probably use the exact EM algorithm.
 
 
