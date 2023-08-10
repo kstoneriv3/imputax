@@ -3,10 +3,10 @@ requires = ["setuptools >= 61.1.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["jax_impute"]
+include = ["imputax"]
 
 [project]
-name = "jax-impute"
+name = "Imputax"
 description = "Missing value imputation algoirithms implemented with Jax."
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -35,12 +35,12 @@ dev = [
 ]
 
 [tool.setuptools.dynamic]
-version = {attr = "jax_impute.version.__version__"}
+version = {attr = "imputax.version.__version__"}
 
 [tool.black]
 line-length = 100
 target-version = ["py310"]
-src_paths = ["jax_impute", "test", "example"]
+src_paths = ["imputax", "test", "example"]
  
 [tool.isort]
 profile = "black"
@@ -58,7 +58,7 @@ ignore-init-module-imports = true
 
 
 [tool.mypy]
-files = ["jax_impute", "test"]
+files = ["imputax", "test"]
 python_version = "3.10"
 warn_unused_configs = true
 disallow_untyped_calls = true
@@ -74,16 +74,4 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["test"]
-ddopts = "--jaxtyping-packages=jax_impute,beartype.beartype(conf=beartype.BeartypeConf(strategy=beartype.BeartypeStrategy.On))"
-
-[[tool.mypy.overrides]]
-module = [
-    "confounding_robust_inference.estimators.baselines",
-    "confounding_robust_inference.estimators.constraints",
-    "confounding_robust_inference.estimators.kcmc",
-    "confounding_robust_inference.estimators.misc"
-]
-disable_error_code = [
-    "attr-defined",
-    "name-defined"
-]  # due to cvxpy not setting __all__ in __init__.py
+ddopts = "--jaxtyping-packages=imputax,beartype.beartype(conf=beartype.BeartypeConf(strategy=beartype.BeartypeStrategy.On))"

@@ -3,7 +3,7 @@ import jax.numpy as jnp
 import pytest
 from jax import Array
 
-from jax_impute import impute_by_factor_model, impute_by_mean, impute_by_pca, impute_by_ppca
+from imputax import impute_by_factor_model, impute_by_mean, impute_by_pca, impute_by_ppca
 
 jax.config.update("jax_platform_name", "cpu")  # type: ignore [no-untyped-call]
 jax.disable_jit()
@@ -43,7 +43,6 @@ def score(x: Array) -> Array:
     SST = jnp.linalg.norm(X0 - impute_by_mean(X))
     SSR = jnp.linalg.norm(X0 - x)
     R2 = 1 - SSR / SST
-    breakpoint()
     return R2
 
 

@@ -4,7 +4,7 @@ import jax.numpy as jnp
 from jaxtyping import Array, Float
 from typing_extensions import Self
 
-from jax_impute.utils import standardize, unstandardize, validate_input
+from imputax.utils import standardize, unstandardize, validate_input
 
 jnp_diag = cast(Callable[[Array], Array], jnp.diag)
 
