@@ -1,5 +1,5 @@
 # Imputax
-Missing value imputation with probabilistic models in Jax.
+Missing value imputation with probabilistic models in Jax. Supported models are PCA, probabilistic PCA, and factor model.
 
 
 # Installation
@@ -22,3 +22,5 @@ Array([[1.       , 2.       , 3.       ],
        [5.0619698, 6.       , 5.031307 ]], dtype=float32)
 >>> 
 ```
+
+Other available functions are `impute_by_pca(...)` and `impute_by_factor_model(...)`.
