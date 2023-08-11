@@ -4,6 +4,8 @@ Missing value imputation with probabilistic models in Jax. Supported models are 
 
 # Installation
 ```bash
+$ git clone git@github.com:kstoneriv3/imputax.git
+$ cd imputax
 $ pip install -e .
 ```
 
