@@ -3,7 +3,7 @@
 This note describes the EM algorithm for the factor model with missing observations. First, we introduce the variational EM algorithm similar to the one for probabilistic PCA by Verbeek* [1], using the non-exact posterior approximation with factorizable variational family $\\{q(x_i^h, z_i): q(x_i^h, z_i) = q(x_i^h)q(z_i)\\}$. 
 On top of the variation EM algorithm, we will discuss the exact EM algorithm in the latter half of this note.
 
-Note that even though an exact E-step should lead to a better solution, his non-exact approximation is computationally more efficient we it does not require the matrix inversion for $\Sigma_i$ for all data points per each E-step.
+Note that even though an exact E-step should lead to a better solution, its non-exact approximation is computationally more efficient as it does not require the matrix inversion for $\Sigma_i$ for all data points per each E-step.
 
 *Note that I use $(X, Z)$ in place of $(Y, X)$ in his note.
 
